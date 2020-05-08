@@ -3,38 +3,33 @@
 // session persistence, api calls, and more.
 const Alexa = require('ask-sdk-core');
 
-const LaunchRequestHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
-    },
-    handle(handlerInput) {
-        const speakOutput = 'Welcome, you can say Hello or Help. Which would you like to try?';
-        return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(speakOutput)
-            .getResponse();
-    }
-};
-const HelloWorldIntentHandler = {
+
+//TrackLevelsIntente
+const TrackLevelsIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'TrackLevelsIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'Hello World!';
+        const request = handlerInput.requestEnvelope.request;
+        var level = request.intent.slots.level.value;
+        var time = request.intent.slots.time.value;
+
+        const speakOutput = 'So your levels are ' + level + ' for ' + time + '?';
+        
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
             .getResponse();
     }
 };
+
 const HelpIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'You can say hello to me! How can I help?';
+        const speakOutput = 'I can track your levels and remind you to test! Why not tell me your levels?';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -107,8 +102,7 @@ const ErrorHandler = {
 // defined are included below. The order matters - they're processed top to bottom.
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
-        LaunchRequestHandler,
-        HelloWorldIntentHandler,
+        TrackLevelsIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
